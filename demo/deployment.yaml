@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admission-server
+  labels:
+    app: admission-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: admission-server
+  template:
+    metadata:
+      labels:
+        app: admission-server
+    spec:
+      containers:
+        - name: server
+          image: us.icr.io/gitsecure/sample-admission-controllers:0.0.1
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8443
+              scheme: HTTPS
+          ports:
+            - containerPort: 8443
+          volumeMounts:
+            - name: tls-certs
+              mountPath: /etc/certs
+              readOnly: true
+      imagePullSecrets:
+        - name: icr-registry-key
+      volumes:
+        - name: tls-certs
+          secret:
+            secretName: admission-server-certs
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: admission-server
+spec:
+  selector:
+    app: admission-server
+  ports:
+    - port: 443
+      targetPort: 8443
