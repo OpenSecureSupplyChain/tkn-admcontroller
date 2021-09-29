@@ -40,14 +40,6 @@
    kubectl get all
    # you can log for the admission-server pod
 
-   # test for the pods
-   kubectl apply -f pods/01_fail_pod_creation_test.yaml
-   # this should fail with the following error
-   # Error from server: error when creating "pods/01_fail_pod_creation_test.yaml": admission webhook "pod-validation.default.svc" denied the request: You cannot use the tag `latest` in a container.
-
-   # now test success
-   kubectl apply -f pods/02_success_pod_creation_test.yaml
-
    # testing fo the pipelines
    # create the tasks
    kubectl apply -f pipelines/01_tasks.yaml
