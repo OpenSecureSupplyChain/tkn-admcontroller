@@ -1,0 +1,95 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: pod-validation
+  annotations:
+    cert-manager.io/inject-ca-from: default/selfsigned-cert
+webhooks:
+  - name: pod-validation.default.svc
+    clientConfig:
+      service:
+        name: admission-server
+        namespace: default
+        path: '/validate/pods'
+      caBundle: '${CA_BUNDLE}'
+    rules:
+      - operations: ['CREATE']
+        apiGroups: ['']
+        apiVersions: ['v1']
+        resources: ['pods']
+    failurePolicy: Fail
+    admissionReviewVersions: ['v1beta1']
+    sideEffects: None
+    timeoutSeconds: 5
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: deployment-validation
+  annotations:
+    cert-manager.io/inject-ca-from: default/selfsigned-cert
+webhooks:
+  - name: deployment-validation.default.svc
+    clientConfig:
+      service:
+        name: admission-server
+        namespace: default
+        path: '/validate/deployments'
+      caBundle: '${CA_BUNDLE}'
+    rules:
+      - operations: ['CREATE', 'DELETE']
+        apiGroups: ['apps']
+        apiVersions: ['v1']
+        resources: ['deployments']
+    failurePolicy: Fail
+    admissionReviewVersions: ['v1beta1']
+    sideEffects: None
+    timeoutSeconds: 5
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: pod-mutation
+  annotations:
+    cert-manager.io/inject-ca-from: default/selfsigned-cert
+webhooks:
+  - name: pod-mutation.default.svc
+    clientConfig:
+      service:
+        name: admission-server
+        namespace: default
+        path: '/mutate/pods'
+      caBundle: '${CA_BUNDLE}'
+    rules:
+      - operations: ['CREATE']
+        apiGroups: ['']
+        apiVersions: ['v1']
+        resources: ['pods']
+    failurePolicy: Fail
+    admissionReviewVersions: ['v1beta1']
+    sideEffects: None
+    timeoutSeconds: 5
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: pipeline-validation
+  annotations:
+    cert-manager.io/inject-ca-from: default/selfsigned-cert
+webhooks:
+  - name: pipeline-validation.default.svc
+    clientConfig:
+      service:
+        name: admission-server
+        namespace: default
+        path: '/validate/pipelines'
+      caBundle: '${CA_BUNDLE}'
+    rules:
+      - operations: ['CREATE']
+        apiGroups: ['tekton.dev']
+        apiVersions: ['v1beta1']
+        resources: ['pipelines']
+    failurePolicy: Fail
+    admissionReviewVersions: ['v1beta1']
+    sideEffects: None
+    timeoutSeconds: 5

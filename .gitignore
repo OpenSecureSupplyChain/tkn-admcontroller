@@ -4,6 +4,7 @@
 *.dll
 *.so
 *.dylib
+tkn-admcontroller
 
 # Test binary, built with `go test -c`
 *.test
