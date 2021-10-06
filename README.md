@@ -1,18 +1,53 @@
 # tkn-admcontroller
 
+tkn-admcontroller is an admission controller that checks and verifies cryptographic signatatures
+made against tekton pipeline / task YAML files.
 
+> :warning: Not ready for use yet!
+
+tkn-admcontroller is still under active development, you're welcome to kick the tyres, but it's
+advised not to use this until 1.0 is released.
 
 ### Prerequisites and Testing on `minikube`
+
+## Install cert-manager
  
-1. `cert-manager`: Install the cert-manager, by running the following command:
+Install the cert-manager, by running the following command:
 
    ```bash
    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
    ```
 
-2. If you are not changing the code, you can use the sample public image `ghcr.io/opensecuresupplychain/tkn-admission-controllers:0.0.2` for testing. If you are changing the code and wants to build a new image, you can follow these instructions:
+## Deploy Tekton
 
-a) Having the secrets pull docker images in your cluster. The secret obtained by running the following command is required is required.
+Install tekton
+
+```bash
+kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
+```
+
+## Deploy tekton admission controllers
+
+Two approaches are possible here, you can use the existing image we have available, or you can create an image using your
+local source code.
+
+### Use existing image
+
+To use the local image, `demo/deployment.yaml' requires the following entry (this is already the default):
+
+```yaml
+spec:
+  containers:
+  - name: server
+    image: ghcr.io/opensecuresupplychain/tkn-admission-controllers:0.0.2
+
+```
+
+### Build your own image from source
+
+This will require setting the registry access credentials into `secrets.yaml`
+
+Run the following commands:
 
    ```bash
    # replace <oci-registry> with your container registry url
@@ -25,9 +60,19 @@ a) Having the secrets pull docker images in your cluster. The secret obtained by
    # assuming you're in the root directory
    echo $oci_secret > demo/secrets.yaml
    ```
-b) Update the image reference in demo/deployment.yaml 
+Update the image reference in demo/deployment.yaml
 
-3. Change directory to `demo` folder and run the following command.
+```yaml
+spec:
+  containers:
+  - name: server
+    image: <your-image>
+
+```
+## Deploy tkn-admission-controller
+
+
+Change directory to `demo` folder and run the `deploy.sh` script
 
    ```bash
    # change directory
@@ -37,8 +82,9 @@ b) Update the image reference in demo/deployment.yaml
    # run the script
    ./deploy.sh
    ```
+## Test the deployment
 
-4. Test for the running resources. We're using the default namespace for demo purposes, assuming you're running minikube.
+Test for the running resources. We're using the default namespace for demo purposes, assuming you're running minikube.
 
    ```bash
    # still in the `demo` folder
@@ -58,13 +104,3 @@ b) Update the image reference in demo/deployment.yaml
    kubectl apply -f pipelines/03_success_pipeline_creation.yaml
 
    ```
-
-5. That is it for testing :)
-
-## Pipeline
-
-Install tekton
-
-```bash
-kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
-```
