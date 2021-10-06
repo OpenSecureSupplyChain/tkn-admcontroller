@@ -15,4 +15,6 @@ tkn-admcontroller
 # Dependency directories (remove the comment below to include it)
 vendor/
 
-demo/certs/
+# secrets
+demo/secrets.yaml
+demo/certs/*
