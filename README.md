@@ -10,18 +10,20 @@
    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
    ```
 
-2. If you are not changing the code, you can use the sample public image `icr.io/gitsecure/sample-admission-controllers:0.0.2` for testing. If you are changing the code and wants to build a new image, you can follow these instructions:
+2. If you are not changing the code, you can use the sample public image `ghcr.io/opensecuresupplychain/tkn-admission-controllers:0.0.2` for testing. If you are changing the code and wants to build a new image, you can follow these instructions:
 
-a) Having the secrets to pull docker images in your cluster. When using the `us.icr.io` container registry, the secret obtained by running the following command is required is required.
+a) Having the secrets pull docker images in your cluster. The secret obtained by running the following command is required is required.
 
    ```bash
-   # replace :api-key with your api key
-   # replace :email-address with your email
+   # replace <oci-registry> with your container registry url
+   # replace <api-key> with your api key
+   # replace <api-user> with your username
+   # replace <email-address> with your email
 
-   export icr_secret=$(kubectl create secret --dry-run=true -o yaml docker-registry icr-registry-key --docker-server=us.icr.io --docker-password=<api-key> --docker-username=iamapikey --docker-email=<email-address>)
+   export oci_secret=$(kubectl create secret --dry-run=true -o yaml docker-registry registry-key --docker-server=<oci-registry> --docker-password=<api-key> --docker-username=<api-user> --docker-email=<email-address>)
 
    # assuming you're in the root directory
-   echo $icr_secret > demo/secrets.yaml
+   echo $oci_secret > demo/secrets.yaml
    ```
 b) Update the image reference in demo/deployment.yaml 
 
