@@ -26,7 +26,7 @@ kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline
 
 ## Deploy tekton admission controller
 
-Once all services tekton and cert-manager are in a `Running` states (`kubectl get pods --all-namespaces`), we can
+Once all services tekton and cert-manager are in a `Running` state (`kubectl get pods --all-namespaces`), we can
 proceed to deploy the tekton admission controller.
 
 Two approaches are possible here, you can use the existing image we have available, create an image yourself or build
