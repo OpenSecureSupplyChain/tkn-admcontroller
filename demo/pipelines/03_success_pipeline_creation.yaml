@@ -2,7 +2,8 @@ apiVersion: tekton.dev/v1beta1
 kind: Pipeline
 metadata:
   annotations:
-    ossc.sigstore.tapestry.dev/transparency: "rekor://my-rekor-log/index"
+    cosign.sigstore.dev/message: "message"
+    cosign.sigstore.dev/signature: "signature"
   name: test-pipeline 
 spec:
   tasks:
