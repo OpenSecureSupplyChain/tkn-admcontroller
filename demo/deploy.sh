@@ -11,11 +11,24 @@ kubectl create secret tls admission-tls \
     --cert "certs/admission-tls.crt" \
     --key "certs/admission-tls.key"
 
-echo "Creating k8s admission deployment"
-kubectl apply -f secrets.yaml
-kubectl apply -f cert.yaml
-kubectl create -f deployment.yaml
+echo -n "Creating k8s admission deployment"
 
-echo "Creating k8s webhooks for demo"
+if test -f "secrets.yaml"; then
+    "Creating registry secrets"
+    kubectl apply -f secrets.yaml
+fi
+
+echo -n "Deploying certificates"
+kubectl apply -f cert.yaml
+
+if [ -x "$(command -v "ko")" ]; then
+  echo -n "Found ko, building image from source"
+  ko apply -f ../config/
+else
+  echo -n "Running with pre-built image"
+  kubectl apply -f deployment.yaml
+fi
+
+echo -n "Creating k8s webhooks"
 CA_BUNDLE=$(cat certs/ca.crt | base64 | tr -d '\n')
 sed -e 's@${CA_BUNDLE}@'"$CA_BUNDLE"'@g' <"webhooks.yaml" | kubectl create -f -

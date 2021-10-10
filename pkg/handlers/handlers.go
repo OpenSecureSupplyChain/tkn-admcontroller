@@ -6,7 +6,7 @@ import (
 	"io"
 	"net/http"
 
-	"github.com/tkn-admcontroller/pkg/controller"
+	"github.com/OpenSecureSupplyChain/tkn-admcontroller/pkg/controller"
 	v1 "k8s.io/api/admission/v1"
 	meta "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
