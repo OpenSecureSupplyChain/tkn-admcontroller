@@ -8,7 +8,8 @@ import (
 	v1 "k8s.io/api/admission/v1"
 )
 
-const signKeyAnnotation = "ossc.sigstore.tapestry.dev/transparency"
+const messageAnnotation = "cosign.sigstore.dev/message"
+const signatureAnnotation = "cosign.sigstore.dev/signature"
 
 func validateCreate() controller.AdmitFunc {
 	return func(r *v1.AdmissionRequest) (*controller.Result, error) {
@@ -18,25 +19,30 @@ func validateCreate() controller.AdmitFunc {
 		}
 
 		annotations := pipeline.GetAnnotations()
-		// fmt.Printf("annotations: %v\n", annotations)
-		// for _, t := range pipeline.Spec.Tasks {
-		// 	if strings.HasSuffix(t.Name, "app") {
-		// 		return &controller.Result{Message: "You cannot use the tag `app` in a task name."}, nil
-		// 	}
-		// }
 
-		annotationFound := false
+		messageAnnotationFound := false
+		signatureAnnotationFound := false
 		for key, val := range annotations {
-			if strings.EqualFold(key, signKeyAnnotation) {
+			if strings.EqualFold(key, signatureAnnotation) {
+				if val == "" {
+					signatureAnnotationFound = true
+				}
+			}
+			if strings.EqualFold(key, messageAnnotation) {
 				if val != "" {
-					annotationFound = true
+					messageAnnotationFound = true
 				}
 			}
 		}
 
-		if !annotationFound {
-			return &controller.Result{Message: "sigstore sign annotation not found"}, nil
+		if !signatureAnnotationFound && !messageAnnotationFound{
+			return &controller.Result{Message: "signature or message annotation not found"}, nil
 		}
+
+		// TODO: verify signature logic
+
 		return &controller.Result{Allowed: true}, nil
 	}
 }
+
+
