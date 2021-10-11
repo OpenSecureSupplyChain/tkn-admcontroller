@@ -1,37 +1,38 @@
-# tkn-admcontroller
+# Tekton Admission Controller
 
-tkn-admcontroller is an admission controller that checks and verifies cryptographic signatatures
-made against tekton pipeline / task YAML files.
+tkn-admcontroller is an admission controller that checks and verifies sigstore style cryptographic signatures for
+tekton pipeline / taskrun YAML files.
 
 > :warning: Not ready for use yet!
 
 tkn-admcontroller is still under active development, you're welcome to kick the tyres, but it's
 advised not to use this until 1.0 is released.
 
-### Prerequisites and Testing on `minikube`
-
 ## Install cert-manager
  
 Install the cert-manager, by running the following command:
 
-   ```bash
-   kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
-   ```
+```bash
+kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.5.3/cert-manager.yaml
+```
 
 ## Deploy Tekton
 
-Install tekton
+Install tekton, by running the following command:
 
 ```bash
 kubectl apply --filename https://storage.googleapis.com/tekton-releases/pipeline/latest/release.yaml
 ```
 
-## Deploy tekton admission controllers
+## Deploy tekton admission controller
 
-Two approaches are possible here, you can use the existing image we have available, or you can create an image using your
-local source code.
+Once all services tekton and cert-manager are in a `Running` state (`kubectl get pods --all-namespaces`), we can
+proceed to deploy the tekton admission controller.
 
-### Use existing image
+Two approaches are possible here, you can use the existing image we have available, create an image yourself or build
+with ko direct from your local source code (the latter being better for development workflows)
+
+### Use the existing image
 
 To use the local image, `demo/deployment.yaml' requires the following entry (this is already the default):
 
@@ -40,7 +41,6 @@ spec:
   containers:
   - name: server
     image: ghcr.io/opensecuresupplychain/tkn-admission-controllers:0.0.2
-
 ```
 
 ### Build your own image from source
@@ -71,7 +71,6 @@ spec:
 ```
 ## Deploy tkn-admission-controller
 
-
 Change directory to `demo` folder and run the `deploy.sh` script
 
    ```bash
@@ -82,6 +81,21 @@ Change directory to `demo` folder and run the `deploy.sh` script
    # run the script
    ./deploy.sh
    ```
+
+## Deploy using ko
+
+Make sure you install ko and that it's in your `$PATH`.
+
+Set up a local registry following the [steps outlined here](https://kind.sigs.k8s.io/docs/user/local-registry/).
+
+Set the following environment variables
+
+```bash
+export KO_DOCKER_REPO="localhost:5000/mypipeline" 
+```
+
+Run `deploy.sh`, the script will sense ko is installed and deploy from `config/100-deployment.yaml`
+
 ## Test the deployment
 
 Test for the running resources. We're using the default namespace for demo purposes, assuming you're running minikube.
@@ -89,7 +103,7 @@ Test for the running resources. We're using the default namespace for demo purpo
    ```bash
    # still in the `demo` folder
    kubectl get all
-   # you can log for the admission-server pod
+   # you can log for the tkn-adm-controller pod
 
    # testing fo the pipelines
    # create the tasks

@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 
 	v1beta1 "github.com/tektoncd/pipeline/pkg/apis/pipeline/v1beta1"
-	"github.com/tkn-admcontroller/pkg/controller"
+	"github.com/OpenSecureSupplyChain/tkn-admcontroller/pkg/controller"
 )
 
 // NewValidationHook creates a new instance of pods validation hook

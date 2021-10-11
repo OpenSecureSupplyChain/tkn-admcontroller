@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/tkn-admcontroller/pkg/controller/pipelines"
-	"github.com/tkn-admcontroller/pkg/handlers"
+	"github.com/OpenSecureSupplyChain/tkn-admcontroller/pkg/controller/pipelines"
+	"github.com/OpenSecureSupplyChain/tkn-admcontroller/pkg/handlers"
 )
 
 //NewServer :

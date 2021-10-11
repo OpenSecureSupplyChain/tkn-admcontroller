@@ -1,4 +1,4 @@
-module github.com/tkn-admcontroller
+module github.com/OpenSecureSupplyChain/tkn-admcontroller
 
 go 1.16
 

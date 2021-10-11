@@ -3,7 +3,7 @@ package pipelines
 import (
 	"strings"
 
-	"github.com/tkn-admcontroller/pkg/controller"
+	"github.com/OpenSecureSupplyChain/tkn-admcontroller/pkg/controller"
 
 	v1 "k8s.io/api/admission/v1"
 )

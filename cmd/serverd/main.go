@@ -7,7 +7,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	http "github.com/tkn-admcontroller/pkg/server"
+	http "github.com/OpenSecureSupplyChain/tkn-admcontroller/pkg/server"
 
 	log "k8s.io/klog/v2"
 )
