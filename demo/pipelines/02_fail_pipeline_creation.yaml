@@ -1,9 +1,0 @@
-apiVersion: tekton.dev/v1beta1
-kind: Pipeline
-metadata:
-  name: test-pipeline
-spec:
-  tasks:
-    - name: goodbye-app
-      taskRef:
-        name: goodbye-app

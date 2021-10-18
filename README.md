@@ -96,25 +96,45 @@ export KO_DOCKER_REPO="localhost:5000/mypipeline"
 
 Run `deploy.sh`, the script will sense ko is installed and deploy from `config/100-deployment.yaml`
 
-## Test the deployment
+## Sign and validate pipeline / taskrun manifest with cosign keys
 
-Test for the running resources. We're using the default namespace for demo purposes, assuming you're running minikube.
+1. Create a keypair with cosign
 
-   ```bash
-   # still in the `demo` folder
-   kubectl get all
-   # you can log for the tkn-adm-controller pod
+```bash
+cosign generate-keys
+```
 
-   # testing fo the pipelines
-   # create the tasks
-   kubectl apply -f pipelines/01_tasks.yaml
+2. Upload the public key as a secret
 
-   # test for failing pipeline
-   kubectl apply -f pipelines/02_fail_pipeline_creation.yaml
-   # this fails with the following error
-   # Error from server: error when creating "./pipelines/02_fail_pipeline_creation.yaml": admission webhook "pipeline-validation.default.svc" denied the request: sigstore sign annotation not found
+```bash
+kubectl create secret generic cosign-pub --from-file=./cosign.pub`
+```
 
-   # now test for success pipeline
-   kubectl apply -f pipelines/03_success_pipeline_creation.yaml
+3. Sign pipeline file with [k8s sigstore manifest tool](https://github.com/sigstore/k8s-manifest-sigstore)
 
-   ```
+```bash
+kubectl-sigstore sign -k cosign.key -f my-manifest.yaml
+```
+
+* this will generate a signed file `my-manifest.yaml.signed`
+
+4. Deploy the pipeline / taskrun
+
+```bash
+kubectl apply -f my-manifest.yaml.signed
+```
+
+Example
+
+```bash
+kubectl apply -f my-manifest.yaml.signed
+pipeline.tekton.dev/tekton-pipeline configured
+
+kubectl apply -f my-manifest.yaml
+Error from server: error when creating "manifest.yaml": admission webhook "pipeline-validation.default.svc" denied the request: signature or message annotation not found
+
+
+kubectl apply -f bad-manifest.yaml.signed
+Error from server: error when creating "test-bad-sig.yaml": admission webhook "pipeline-validation.default.svc" denied the request: Signature validation failed
+
+```
