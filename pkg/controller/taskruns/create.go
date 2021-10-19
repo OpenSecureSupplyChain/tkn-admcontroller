@@ -48,20 +48,9 @@ func validateTaskrunCreate() controller.AdmitFunc {
 			return &controller.Result{Message: "Signature validation failed"}, nil
 		}
 
-		//Validate all step images
-		failedImgs := []string{}
-		for _, step := range taskrun.Spec.TaskSpec.Steps {
-			stepImg := step.Image
-			isVerified, err := validator.ValidateImage(stepImg, "")
-			if err != nil || !isVerified {
-				failedImgs = append(failedImgs, stepImg)
-			}
-		}
-		if len(failedImgs) != 0 {
-			failedMsg := fmt.Sprintf("Signature validation failed for images: [%s]", strings.Join(failedImgs, ","))
-			return &controller.Result{Message: failedMsg}, nil
-		}
-
+		fmt.Printf("need to verify taskref: %s\n", taskrun.Spec.TaskRef.Name)
+		//TODO: retrieve referenced task definition and verify if it signed
+		// also, verify all step images if they are signed
 		return &controller.Result{Allowed: true}, nil
 	}
 }

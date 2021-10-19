@@ -1,0 +1,13 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  name: build-pipeline-run2
+spec:
+  pipelineRef:
+    name: build-pipeline
+  workspaces:
+  - name: source
+    emptyDir: {}
+  - name: dockerconfig
+    secret:
+      secretName: kaniko-secret

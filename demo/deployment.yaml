@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: server
-          image: ghcr.io/opensecuresupplychain/tkn-admission-controllers:0.0.2
+          image: us.icr.io/gitsecure/tkn-admcontroller:0.3.0
           imagePullPolicy: Always
           livenessProbe:
             httpGet:
@@ -29,12 +29,18 @@ spec:
             - name: tls-certs
               mountPath: /etc/certs
               readOnly: true
+            - name: cosign-pub-key
+              mountPath: /etc/cosign
+              readOnly: true
       imagePullSecrets:
         - name: icr-registry-key
       volumes:
         - name: tls-certs
           secret:
             secretName: admission-server-certs
+        - name: cosign-pub-key
+          secret:
+            secretName: cosign-pub 
 ---
 apiVersion: v1
 kind: Service

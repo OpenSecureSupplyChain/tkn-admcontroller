@@ -47,13 +47,13 @@ webhooks:
     timeoutSeconds: 5
 ---
 apiVersion: admissionregistration.k8s.io/v1
-kind: MutatingWebhookConfiguration
+kind: ValidatingWebhookConfiguration
 metadata:
   name: taskrun-validation
   annotations:
     cert-manager.io/inject-ca-from: default/selfsigned-cert
 webhooks:
-  - name: taskrun-mutation.default.svc
+  - name: taskrun-validation.default.svc
     clientConfig:
       service:
         name: admission-server
