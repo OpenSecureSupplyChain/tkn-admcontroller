@@ -31,12 +31,18 @@ spec:
             - name: tls-certs
               mountPath: /etc/certs
               readOnly: true
+            - name: cosign-pub
+              mountPath: /etc/cosign
+              readOnly: true
       # imagePullSecrets:
       #   - name: icr-registry-key
       volumes:
         - name: tls-certs
           secret:
             secretName: admission-server-certs
+        - name: cosign-pub
+          secret:
+            secretName: cosign-pub
 ---
 apiVersion: v1
 kind: Service
