@@ -55,7 +55,7 @@ func validateCreate() controller.AdmitFunc {
 			}
 		}
 
-		if !signatureAnnotationFound && !messageAnnotationFound{
+		if !signatureAnnotationFound && !messageAnnotationFound {
 			return &controller.Result{Message: "signature or message annotation not found"}, nil
 		}
 
@@ -90,4 +90,3 @@ func gzipDecompress(in []byte) []byte {
 	}
 	return output
 }
-

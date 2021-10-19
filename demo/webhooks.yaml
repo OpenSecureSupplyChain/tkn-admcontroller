@@ -1,22 +1,22 @@
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: pod-validation
+  name: pipelinerun-validation
   annotations:
     cert-manager.io/inject-ca-from: default/selfsigned-cert
 webhooks:
-  - name: pod-validation.default.svc
+  - name: pipelinerun-validation.default.svc
     clientConfig:
       service:
         name: admission-server
         namespace: default
-        path: '/validate/pods'
+        path: '/validate/pipelineruns'
       caBundle: '${CA_BUNDLE}'
     rules:
       - operations: ['CREATE']
-        apiGroups: ['']
-        apiVersions: ['v1']
-        resources: ['pods']
+        apiGroups: ['tekton.dev']
+        apiVersions: ['v1beta1']
+        resources: ['pipelineruns']
     failurePolicy: Fail
     admissionReviewVersions: ['v1beta1']
     sideEffects: None
@@ -25,22 +25,22 @@ webhooks:
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
-  name: deployment-validation
+  name: task-validation
   annotations:
     cert-manager.io/inject-ca-from: default/selfsigned-cert
 webhooks:
-  - name: deployment-validation.default.svc
+  - name: task-validation.default.svc
     clientConfig:
       service:
         name: admission-server
         namespace: default
-        path: '/validate/deployments'
+        path: '/validate/tasks'
       caBundle: '${CA_BUNDLE}'
     rules:
-      - operations: ['CREATE', 'DELETE']
-        apiGroups: ['apps']
-        apiVersions: ['v1']
-        resources: ['deployments']
+      - operations: ['CREATE']
+        apiGroups: ['tekton.dev']
+        apiVersions: ['v1beta1']
+        resources: ['tasks']
     failurePolicy: Fail
     admissionReviewVersions: ['v1beta1']
     sideEffects: None
@@ -49,22 +49,22 @@ webhooks:
 apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
-  name: pod-mutation
+  name: taskrun-validation
   annotations:
     cert-manager.io/inject-ca-from: default/selfsigned-cert
 webhooks:
-  - name: pod-mutation.default.svc
+  - name: taskrun-mutation.default.svc
     clientConfig:
       service:
         name: admission-server
         namespace: default
-        path: '/mutate/pods'
+        path: '/validate/taskruns'
       caBundle: '${CA_BUNDLE}'
     rules:
       - operations: ['CREATE']
-        apiGroups: ['']
-        apiVersions: ['v1']
-        resources: ['pods']
+        apiGroups: ['tekton.dev']
+        apiVersions: ['v1beta1']
+        resources: ['taskruns']
     failurePolicy: Fail
     admissionReviewVersions: ['v1beta1']
     sideEffects: None
