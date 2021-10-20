@@ -3,11 +3,11 @@ package pipelines
 import (
 	"encoding/json"
 
-	v1beta1 "github.com/tektoncd/pipeline/pkg/apis/pipeline/v1beta1"
 	"github.com/OpenSecureSupplyChain/tkn-admcontroller/pkg/controller"
+	v1beta1 "github.com/tektoncd/pipeline/pkg/apis/pipeline/v1beta1"
 )
 
-// NewValidationHook creates a new instance of pods validation hook
+// NewValidationHook creates a new instance of pipeline validation hook
 func NewValidationHook() controller.Hook {
 	return controller.Hook{
 		Create: validateCreate(),

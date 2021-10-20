@@ -1,0 +1,20 @@
+apiVersion: tekton.dev/v1beta1
+kind: Pipeline
+metadata:
+  name: build-pipeline
+spec:
+  workspaces:
+    - name: source
+    - name: dockerconfig
+  tasks:
+    - name: kaniko-chains
+      taskRef:
+        name: kaniko-chains
+      params:
+      - name: IMAGE
+        value: us.icr.io/gitsecure/kaniko-chains
+      workspaces:
+        - name: source
+          workspace: source
+        - name: dockerconfig
+          workspace: dockerconfig
